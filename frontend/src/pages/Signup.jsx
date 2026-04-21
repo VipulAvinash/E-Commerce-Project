@@ -1,72 +1,114 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import api from "../api/axios.js";
+import bgImage from "../assets/login-bg.png";
+import "./Login.css";
 
 export default function SignUp() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const navigate = useNavigate();
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      const response = await api.post("/auth/signup", form);
-      setMsg(response.data.message);
+      await api.post("/auth/signup", form);
+      
+      setMsg("Signup Successful");
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (err) {
-      setMsg(err.response?.data?.message || "An error occured");
+      setMsg(err.response?.data?.message || "Signup Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 ">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create Account</h2>
-        {msg && (
-          <div className="bg-red-100 text-blue-700 p-3 rounded mb-4 text-center">
-            {msg}
+    <div className="login-container">
+      <div className="login-left">
+        <div className="login-form-wrapper">
+          <div className="login-header">
+            <h2>Create Account</h2>
+            <p>Enter your details to create a new account.</p>
           </div>
-        )}
+          
+          {msg && (
+            <div className={`login-msg ${msg === "Signup Successful" ? "success" : "error"}`}>
+              {msg}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            placeholder="Enter Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-mb focus:outline-none focus:ring-2 focus:ring-blue-500 "
-            required
-          />
-          <input
-            name="email"
-            placeholder="Enter Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-mb focus:outline-none focus:ring-2 focus:ring-blue-500 "
-            required
-          />
-          <input
-            name="password"
-            placeholder="Enter Password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-mb focus:outline-none focus:ring-2 focus:ring-blue-500 "
-            required
-          />
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="input-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Enter your name"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-mb hover:bg-blue-600 transition-colors "
-          >
-            Sign Up{" "}
-          </button>
-        </form>
+            <div className="input-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="Create a password"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`login-button ${loading ? "loading" : ""}`}
+              disabled={loading}
+            >
+              {loading ? "Signing up..." : "Sign Up"}
+            </button>
+          </form>
+          
+          <div className="login-footer">
+            <p>Already have an account? <a href="/login">Sign in</a></p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="login-right">
+        <img src={bgImage} alt="E-commerce abstract background" className="login-bg-image" />
+        <div className="login-right-overlay">
+          <h3>Join Our Community</h3>
+          <p>Create an account to start shopping our premium collection.</p>
+        </div>
       </div>
     </div>
   );
