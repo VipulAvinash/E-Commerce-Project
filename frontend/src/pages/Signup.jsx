@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import api from "../api/axios.js";
 import bgImage from "../assets/login-bg.png";
-import "./Login.css";
 
 export default function SignUp() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -34,23 +33,36 @@ export default function SignUp() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-left">
-        <div className="login-form-wrapper">
-          <div className="login-header">
-            <h2>Create Account</h2>
-            <p>Enter your details to create a new account.</p>
+    <div className="flex min-h-screen w-full bg-[#0f172a] text-[#f8fafc] font-outfit overflow-hidden absolute inset-0">
+      {/* Decorative gradient background element */}
+      <div className="absolute -top-[20%] -left-[20%] w-[60%] h-[60%] bg-[radial-gradient(circle,_rgba(139,92,246,0.15)_0%,_rgba(15,23,42,0)_70%)] rounded-full pointer-events-none z-0"></div>
+
+      <div className="flex-1 flex items-center justify-center p-8 z-10 relative">
+        <div className="w-full max-w-[440px] bg-slate-800/40 backdrop-blur-xl border border-white/10 p-12 rounded-[24px] shadow-2xl animate-[fadeIn_0.8s_ease-out_forwards] opacity-0 translate-y-5">
+          <div className="mb-8 text-left">
+            <h2 className="text-[2.25rem] font-bold mb-2 bg-gradient-to-br from-slate-200 to-slate-400 bg-clip-text text-transparent tracking-tight">
+              Create Account
+            </h2>
+            <p className="text-slate-400 text-base m-0">
+              Enter your details to create a new account.
+            </p>
           </div>
           
           {msg && (
-            <div className={`login-msg ${msg === "Signup Successful" ? "success" : "error"}`}>
+            <div className={`p-3.5 rounded-xl mb-6 text-[0.9rem] text-center font-medium animate-[slideDown_0.3s_ease-out] ${
+              msg === "Signup Successful" 
+                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                : "bg-red-500/10 text-red-400 border border-red-500/20"
+            }`}>
               {msg}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="input-group">
-              <label htmlFor="name">Name</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name" className="text-sm font-medium text-slate-300">
+                Name
+              </label>
               <input
                 type="text"
                 id="name"
@@ -58,12 +70,15 @@ export default function SignUp() {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Enter your name"
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3.5 text-slate-50 text-base transition-all duration-300 outline-none focus:border-violet-500 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/15 placeholder:text-slate-600"
                 required
               />
             </div>
 
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-sm font-medium text-slate-300">
+                Email
+              </label>
               <input
                 type="email"
                 id="email"
@@ -71,12 +86,15 @@ export default function SignUp() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3.5 text-slate-50 text-base transition-all duration-300 outline-none focus:border-violet-500 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/15 placeholder:text-slate-600"
                 required
               />
             </div>
 
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-sm font-medium text-slate-300">
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
@@ -84,30 +102,44 @@ export default function SignUp() {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Create a password"
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3.5 text-slate-50 text-base transition-all duration-300 outline-none focus:border-violet-500 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/15 placeholder:text-slate-600"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className={`login-button ${loading ? "loading" : ""}`}
+              className={`bg-gradient-to-br from-violet-500 to-indigo-500 text-white border-none rounded-xl p-4 text-base font-semibold cursor-pointer mt-4 transition-all duration-300 relative overflow-hidden shadow-[0_4px_14px_0_rgba(99,102,241,0.39)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)] active:translate-y-[1px] disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:transform-none`}
               disabled={loading}
             >
               {loading ? "Signing up..." : "Sign Up"}
             </button>
           </form>
           
-          <div className="login-footer">
-            <p>Already have an account? <a href="/login">Sign in</a></p>
+          <div className="mt-8 text-center text-[0.9rem] text-slate-400">
+            <p>
+              Already have an account? 
+              <a href="/login" className="text-violet-500 no-underline font-semibold ml-1 transition-colors duration-200 hover:text-violet-400">
+                Sign in
+              </a>
+            </p>
           </div>
         </div>
       </div>
       
-      <div className="login-right">
-        <img src={bgImage} alt="E-commerce abstract background" className="login-bg-image" />
-        <div className="login-right-overlay">
-          <h3>Join Our Community</h3>
-          <p>Create an account to start shopping our premium collection.</p>
+      <div className="flex-[1.2] relative hidden lg:block overflow-hidden">
+        <img 
+          src={bgImage} 
+          alt="E-commerce abstract background" 
+          className="absolute inset-0 w-full h-full object-cover object-center animate-[subtleScale_20s_ease-in-out_infinite_alternate]" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-slate-900/10 flex flex-col justify-end p-16">
+          <h3 className="text-white text-[2.5rem] font-bold mb-4 leading-[1.2] drop-shadow-md">
+            Join Our Community
+          </h3>
+          <p className="text-slate-300 text-[1.125rem] max-w-[80%] m-0 leading-normal drop-shadow-sm">
+            Create an account to start shopping our premium collection.
+          </p>
         </div>
       </div>
     </div>
