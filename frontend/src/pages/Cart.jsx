@@ -23,6 +23,7 @@ export default function Cart() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCart(res.data);
+      window.dispatchEvent(new Event("cart-updated"));
     } catch (err) {
       console.error(err.message);
       setError("Unable to load your cart right now.");
@@ -121,20 +122,6 @@ export default function Cart() {
       <div className="pointer-events-none absolute -left-[18%] -top-[24%] h-[62vw] min-h-[420px] w-[62vw] min-w-[420px] rounded-full bg-[radial-gradient(circle,_rgba(139,92,246,0.14)_0%,_rgba(15,23,42,0)_70%)]" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 py-6 sm:px-8 lg:px-10">
-        <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-800/35 px-5 py-4 shadow-2xl backdrop-blur-xl">
-          <Link
-            to="/"
-            className="text-xl font-bold tracking-tight text-white no-underline"
-          >
-            E-Commerce
-          </Link>
-          <Link
-            to="/"
-            className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-slate-200 no-underline transition hover:border-violet-400/50 hover:bg-white/5 hover:text-white"
-          >
-            Continue Shopping
-          </Link>
-        </header>
 
         <section className="flex flex-col gap-2">
           <h1 className="m-0 bg-gradient-to-br from-white to-slate-300 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
@@ -282,10 +269,17 @@ export default function Cart() {
               </div>
 
               <Link
-                to="/"
+                to="/checkout-address"
                 className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 px-5 py-3 text-base font-semibold text-white no-underline shadow-[0_4px_14px_0_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)]"
               >
-                Add More Products
+                Proceed to Checkout
+              </Link>
+
+              <Link
+                to="/"
+                className="mt-3 flex min-h-12 w-full items-center justify-center rounded-xl border border-white/10 px-5 py-3 text-base font-semibold text-slate-200 no-underline transition hover:border-violet-400/50 hover:bg-white/5 hover:text-white"
+              >
+                Continue Shopping
               </Link>
             </aside>
           </section>

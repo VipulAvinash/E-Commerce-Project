@@ -8,6 +8,10 @@ import ProductList from "./admin/ProductList.jsx";
 import EditProduct from "./admin/EditProduct.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Cart from "./pages/Cart.jsx";
+import CheckoutAddress from "./pages/CheckoutAddress.jsx";
+import Checkout from "./pages/Checkout.jsx";
+import OrderSuccess from "./pages/OrderSuccess.jsx";
+
 function Layout() {
   return (
     <>
@@ -26,6 +30,9 @@ const router = createBrowserRouter([
       { path: "/signup", element: <Signup /> },
       { path: "/product/:id", element: <ProductDetails /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/checkout-address", element: <CheckoutAddress /> },
+      { path: "/checkout", element: <Checkout /> },
+      { path: "/order-success", element: <OrderSuccess /> },
       { path: "/admin/products", element: <ProductList /> },
       { path: "/admin/products/add", element: <AddProducts /> },
       { path: "/admin/products/edit/:id", element: <EditProduct /> },

@@ -8,6 +8,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,13 +22,16 @@ export default function Login() {
       const res = await api.post("/auth/login", form);
 
       localStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("userId", res.data.user.id);
+      window.dispatchEvent(new Event("auth-changed"));
       setMsg("Login Successful");
 
       setTimeout(() => {
-        navigate("/admin/products");
+        navigate("/");
       }, 1000);
     } catch (err) {
-      setMsg(err.response?.data?.msg || "Login Failed");
+      setMsg(err.response?.data?.message || "Login Failed");
       setLoading(false);
     }
   };
@@ -79,16 +83,35 @@ export default function Login() {
               <label htmlFor="password" className="text-sm font-medium text-slate-300">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3.5 text-slate-50 text-base transition-all duration-300 outline-none focus:border-violet-500 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/15 placeholder:text-slate-600"
-                required
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  className="w-full bg-slate-900/60 border border-white/10 rounded-xl pl-4 pr-12 py-3.5 text-slate-50 text-base transition-all duration-300 outline-none focus:border-violet-500 focus:bg-slate-900/80 focus:ring-4 focus:ring-violet-500/15 placeholder:text-slate-600"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-slate-400 hover:text-white focus:outline-none flex items-center justify-center cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.815 7.815 3 3m-3-3a9.79 9.79 0 0 1-4.125 1.012c-4.756 0-8.773-3.162-10.065-7.498a9.79 9.79 0 0 1 1.125-3.307m9.761 2.155a3 3 0 1 1-4.243 4.243" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="flex justify-end -mt-2">

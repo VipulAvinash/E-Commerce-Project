@@ -1,14 +1,51 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import heroImage from "../assets/hero.png";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  const [addingId, setAddingId] = useState("");
+  const [addedIds, setAddedIds] = useState(new Set());
+
+  const handleAddToCart = async (productId) => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setAddingId(productId);
+      await api.post("/cart/add", { productId }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      window.dispatchEvent(new Event("cart-updated"));
+      setAddedIds(prev => {
+        const next = new Set(prev);
+        next.add(productId);
+        return next;
+      });
+      setTimeout(() => {
+        setAddedIds(prev => {
+          const next = new Set(prev);
+          next.delete(productId);
+          return next;
+        });
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to add product to cart:", err);
+      alert("Failed to add product to cart.");
+    } finally {
+      setAddingId("");
+    }
+  };
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -37,26 +74,6 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden bg-[#0f172a] font-outfit text-slate-50">
       <div className="pointer-events-none absolute -left-[18%] -top-[24%] h-[62vw] min-h-[420px] w-[62vw] min-w-[420px] rounded-full bg-[radial-gradient(circle,_rgba(139,92,246,0.14)_0%,_rgba(15,23,42,0)_70%)]" />
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-6 sm:px-8 lg:px-10">
-        <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-800/35 px-5 py-4 shadow-2xl backdrop-blur-xl">
-          <Link to="/" className="text-xl font-bold tracking-tight text-white no-underline">
-            E-Commerce
-          </Link>
-
-          <nav className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-slate-200 no-underline transition hover:border-violet-400/50 hover:bg-white/5 hover:text-white"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/signup"
-              className="rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_14px_0_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)]"
-            >
-              Sign Up
-            </Link>
-          </nav>
-        </header>
 
         <section className="relative min-h-[420px] overflow-hidden rounded-[24px] border border-white/10 shadow-2xl">
           <img
@@ -175,12 +192,30 @@ export default function Home() {
                       <span className={product.stock > 0 ? "text-sm font-medium text-emerald-300" : "text-sm font-medium text-rose-300"}>
                         {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
                       </span>
-                      <Link
-                        to={`/product/${product._id}`}
-                        className="rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white no-underline shadow-[0_4px_14px_0_rgba(99,102,241,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)]"
-                      >
-                        View Product
-                      </Link>
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to={`/product/${product._id}`}
+                          className="rounded-xl border border-white/10 px-3.5 py-2 text-sm font-semibold text-slate-200 no-underline transition hover:border-violet-400/50 hover:bg-white/5 hover:text-white"
+                        >
+                          View
+                        </Link>
+                        <button
+                          type="button"
+                          disabled={product.stock <= 0 || addingId === product._id}
+                          onClick={() => handleAddToCart(product._id)}
+                          className={`rounded-xl px-3.5 py-2 text-sm font-semibold text-white transition-all shadow-[0_4px_12px_0_rgba(99,102,241,0.25)] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(99,102,241,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer ${
+                            addedIds.has(product._id)
+                              ? "bg-gradient-to-br from-emerald-500 to-teal-500"
+                              : "bg-gradient-to-br from-violet-500 to-indigo-500"
+                          }`}
+                        >
+                          {addingId === product._id
+                            ? "Adding..."
+                            : addedIds.has(product._id)
+                            ? "Added!"
+                            : "Add to Cart"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </article>
