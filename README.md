@@ -112,6 +112,4 @@ This project is built to support production builds out-of-the-box (e.g., hosting
 ### Frontend (Netlify)
 1. Add your frontend repository to Netlify pointing to the `/frontend` directory.
 2. In the Netlify Dashboard under **Site configuration > Environment variables**, add your production backend API variable:
-   * **Key**: `VITE_API_URL`
-   * **Value**: `https://e-commerce-project-x82b.onrender.com/api` *(Make sure to append /api to the end of your Render URL!)*
 3. Trigger a new deploy to build the React package containing the dynamic production API URLs.
