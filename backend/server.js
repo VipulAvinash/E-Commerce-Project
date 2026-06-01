@@ -19,6 +19,10 @@ app.use('/api/cart',cartRoutes)
 app.use('/api/address',addressRoutes)
 app.use('/api/order',orderRoutes)
 
+app.get('/', (req, res) => {
+    res.json({ message: "E-Commerce API is running successfully!" });
+});
+
 connectDB();
 
 app.listen(5001,()=>{
