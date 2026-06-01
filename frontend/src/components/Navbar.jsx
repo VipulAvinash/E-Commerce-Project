@@ -92,12 +92,6 @@ export default function Navbar() {
                 >
                   Products
                 </Link>
-                <Link
-                  to="/admin/products"
-                  className="rounded-xl border border-transparent px-4 py-2.5 text-sm font-semibold text-slate-300 no-underline transition hover:bg-white/5 hover:text-white"
-                >
-                  Admin
-                </Link>
                 <button
                   onClick={logout}
                   className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-300 cursor-pointer"
