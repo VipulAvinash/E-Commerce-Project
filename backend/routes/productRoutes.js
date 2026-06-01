@@ -2,7 +2,7 @@ import express from 'express';
 import { getProducts, createProduct, deleteProduct, updateProduct } from '../controller/productController.js';
 
 
-const router = express();
+const router = express.Router();
 
 router.post('/add', createProduct)
 router.get('/', getProducts)
